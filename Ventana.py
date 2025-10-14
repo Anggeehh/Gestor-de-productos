@@ -2,7 +2,7 @@ import tkinter as tk
 
 # 1. Ventana principal
 ventana = tk.Tk()
-ventana.title("productos")
+ventana.title("Gestor de productos")
 ventana.geometry("820x450")  # Ancho x Alto
 ventana.configure(bg="#e6f2e6")  # Fondo general verde claro
 
