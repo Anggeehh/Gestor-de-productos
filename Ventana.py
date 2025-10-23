@@ -22,6 +22,9 @@ def añadido():
     
     print("Has añadido un nuevo producto")
 
+def modificado():
+
+    print("Has modificado un producto")
 
 campo_nombre = crear_label("Nombre:", 0)
 campo_fecha = crear_label("Fecha Caducidad (AAAA-MM-DD):", 1)
@@ -36,7 +39,7 @@ frame_botones.pack(pady=10)
 
 #---botones---
 boton_add = tk.Button(frame_botones, text="Añadir Producto" , bg="#b2d8b2", fg="#004d00", activebackground="#a3cfa3" , command=añadido)
-boton_update = tk.Button(frame_botones, text="Modificar Producto" , bg="#b2d8b2", fg="#004d00", activebackground="#a3cfa3")
+boton_update = tk.Button(frame_botones, text="Modificar Producto" , bg="#b2d8b2", fg="#004d00", activebackground="#a3cfa3" , command=modificado)
 boton_delete = tk.Button(frame_botones, text="Eliminar Producto" , bg="#b2d8b2", fg="#004d00", activebackground="#a3cfa3")
 
 boton_add.grid(row=6, column=1, padx=10, pady=10)
