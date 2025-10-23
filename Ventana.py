@@ -37,24 +37,10 @@ boton_add.grid(row=6, column=1, padx=10, pady=10)
 boton_update.grid(row=6, column=2, padx=10, pady=10)
 boton_delete.grid(row=6, column=3, padx=10, pady=10)
 
-
 # --- Lista de productos ---
 etiqueta_lista = tk.Label(ventana, text="Lista de productos:", bg="#e6f2e6", fg="#2e8b57")
 etiqueta_lista.pack()
 lista_tareas = tk.Listbox(ventana, width=60, height=10, bg="#f0fff0", fg="#006400")
 lista_tareas.pack(padx=10, pady=5)
 
-<<<<<<< HEAD
 ventana.mainloop()
-=======
-
-ventana.mainloop()
-
-
-
-
-
-
-
-
->>>>>>> 051596f7049954c4b5a03efae1d25f1a73702522
