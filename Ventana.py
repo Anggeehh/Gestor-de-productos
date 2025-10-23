@@ -44,4 +44,3 @@ lista_tareas = tk.Listbox(ventana, width=60, height=10, bg="#f0fff0", fg="#00640
 lista_tareas.pack(padx=10, pady=5)
 
 ventana.mainloop()
-
