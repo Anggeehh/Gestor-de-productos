@@ -26,6 +26,10 @@ def modificado():
 
     print("Has modificado un producto")
 
+def eliminado():
+
+    print("Has eliminado un producto")
+
 campo_nombre = crear_label("Nombre:", 0)
 campo_fecha = crear_label("Fecha Caducidad (AAAA-MM-DD):", 1)
 campo_cat = crear_label("Categoría:", 2)
@@ -40,7 +44,7 @@ frame_botones.pack(pady=10)
 #---botones---
 boton_add = tk.Button(frame_botones, text="Añadir Producto" , bg="#b2d8b2", fg="#004d00", activebackground="#a3cfa3" , command=añadido)
 boton_update = tk.Button(frame_botones, text="Modificar Producto" , bg="#b2d8b2", fg="#004d00", activebackground="#a3cfa3" , command=modificado)
-boton_delete = tk.Button(frame_botones, text="Eliminar Producto" , bg="#b2d8b2", fg="#004d00", activebackground="#a3cfa3")
+boton_delete = tk.Button(frame_botones, text="Eliminar Producto" , bg="#b2d8b2", fg="#004d00", activebackground="#a3cfa3" , command=eliminado)
 
 boton_add.grid(row=6, column=1, padx=10, pady=10)
 boton_update.grid(row=6, column=2, padx=10, pady=10)
