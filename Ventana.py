@@ -1,59 +1,71 @@
 import tkinter as tk
+import sqlite3
 
-# 1. Ventana principal
-ventana = tk.Tk()
-ventana.title("Gestor de productos")
-ventana.geometry("820x450")  # Ancho x Alto
-ventana.configure(bg="#e6f2e6")  # Fondo general verde claro
+class App:
+    def __init__(self, ventana):
+        self.ventana = ventana
+        self.ventana.title("Gestor de Productos")
+        self.ventana.geometry("820x450")
+        self.ventana.configure(bg="#e6f2e6")
 
-# --- Frame para el formulario ---
-frame_formulario = tk.Frame(ventana, bg="#e6f2e6")
-frame_formulario.pack(padx=10, pady=10)
+        # --- Frame para el formulario ---
+        self.frame_formulario = tk.Frame(self.ventana, bg="#e6f2e6")
+        self.frame_formulario.pack(padx=10, pady=10)
+        
+        # Campos del formulario
+        self.campo_nombre = self.crear_label("Nombre:", 0)
+        self.campo_fecha = self.crear_label("Fecha Caducidad (AAAA-MM-DD):", 1)
+        self.campo_cat = self.crear_label("Categoría:", 2)
+        self.campo_marca = self.crear_label("Marca:", 3)
+        self.campo_prec = self.crear_label("Precio:", 4)
+        self.campo_stock = self.crear_label("Stock:", 5)
 
-def crear_label(texto, fila):
-    etiqueta = tk.Label(frame_formulario, text=texto, bg="#e6f2e6", fg="#2e8b57")
-    etiqueta.grid(row=fila, column=0, sticky="e")
-    campo = tk.Entry(frame_formulario, bg="#f0fff0", fg="#006400")
-    campo.grid(row=fila, column=1)
-    return campo
+        # --- Frame para los botones ---
+        self.frame_botones = tk.Frame(self.ventana, bg="#e6f2e6")
+        self.frame_botones.pack(pady=10)
 
-# --- 1. Definimos la función que se ejecutará ---
-def añadido():
-    
-    print("Has añadido un nuevo producto")
+        # --- Botones ---
+        boton_add = tk.Button(self.frame_botones, text="Añadir Producto",
+                              bg="#b2d8b2", fg="#004d00", activebackground="#a3cfa3",
+                              command=self.añadido)
+        boton_update = tk.Button(self.frame_botones, text="Modificar Producto",
+                                 bg="#b2d8b2", fg="#004d00", activebackground="#a3cfa3",
+                                 command=self.modificado)
+        boton_delete = tk.Button(self.frame_botones, text="Eliminar Producto",
+                                 bg="#b2d8b2", fg="#004d00", activebackground="#a3cfa3",
+                                 command=self.eliminado)
 
-def modificado():
+        boton_add.grid(row=0, column=0, padx=10, pady=10)
+        boton_update.grid(row=0, column=1, padx=10, pady=10)
+        boton_delete.grid(row=0, column=2, padx=10, pady=10)
 
-    print("Has modificado un producto")
+        # --- Lista de productos ---
+        etiqueta_lista = tk.Label(self.ventana, text="Lista de productos:", bg="#e6f2e6", fg="#2e8b57")
+        etiqueta_lista.pack()
 
-def eliminado():
+        self.lista_tareas = tk.Listbox(self.ventana, width=60, height=10, bg="#f0fff0", fg="#006400")
+        self.lista_tareas.pack(padx=10, pady=5)
 
-    print("Has eliminado un producto")
+    def crear_label(self, texto, fila):
+        etiqueta = tk.Label(self.frame_formulario, text=texto, bg="#e6f2e6", fg="#2e8b57")
+        etiqueta.grid(row=fila, column=0, sticky="e")
+        campo = tk.Entry(self.frame_formulario, bg="#f0fff0", fg="#006400")
+        campo.grid(row=fila, column=1)
+        return campo
 
-campo_nombre = crear_label("Nombre:", 0)
-campo_fecha = crear_label("Fecha Caducidad (AAAA-MM-DD):", 1)
-campo_cat = crear_label("Categoría:", 2)
-campo_marca = crear_label("Marca:", 3)
-campo_prec = crear_label("Precio:", 4)
-campo_stock = crear_label("Stock:", 5)
+    # --- Funciones de botones ---
+    def añadido(self):
+        print("Has añadido un nuevo producto")
 
-# --- Frame para los botones ---
-frame_botones = tk.Frame(ventana, bg="#e6f2e6")
-frame_botones.pack(pady=10)
+    def modificado(self):
+        print("Has modificado un producto")
 
-#---botones---
-boton_add = tk.Button(frame_botones, text="Añadir Producto" , bg="#b2d8b2", fg="#004d00", activebackground="#a3cfa3" , command=añadido)
-boton_update = tk.Button(frame_botones, text="Modificar Producto" , bg="#b2d8b2", fg="#004d00", activebackground="#a3cfa3" , command=modificado)
-boton_delete = tk.Button(frame_botones, text="Eliminar Producto" , bg="#b2d8b2", fg="#004d00", activebackground="#a3cfa3" , command=eliminado)
+    def eliminado(self):
+        print("Has eliminado un producto")
 
-boton_add.grid(row=6, column=1, padx=10, pady=10)
-boton_update.grid(row=6, column=2, padx=10, pady=10)
-boton_delete.grid(row=6, column=3, padx=10, pady=10)
 
-# --- Lista de productos ---
-etiqueta_lista = tk.Label(ventana, text="Lista de productos:", bg="#e6f2e6", fg="#2e8b57")
-etiqueta_lista.pack()
-lista_tareas = tk.Listbox(ventana, width=60, height=10, bg="#f0fff0", fg="#006400")
-lista_tareas.pack(padx=10, pady=5)
-
-ventana.mainloop()
+# --- Lanzar la aplicación ---
+if __name__ == "__main__":
+    ventana_principal = tk.Tk()
+    app = App(ventana_principal)
+    ventana_principal.mainloop()
