@@ -63,36 +63,98 @@ class App:
     def eliminado(self):
         print("Has eliminado un producto")
 
-    # --- PASO 1: Conectar a la base de datos ---
-# Se crea el archivo 'tareas.db' si no existe
-conexion = sqlite3.connect('productos.db')
 
-# Para poder enviar comandos, necesitamos un "cursor"
-cursor = conexion.cursor()
+        
+# --- Conexión a la Base de Datos ---
+        self.conexion = sqlite3.connect('productos.db')
+        self.cursor = self.conexion.cursor()
+        self.crear_tabla()
+# ... (resto de la clase) ...
 
-# --- PASO 2: Ejecutar un comando SQL ---
-# Usamos un string multilínea con triples comillas para que el SQL sea más legible
-comando_sql = """
-CREATE TABLE IF NOT EXISTS producto (
-    id INTEGER PRIMARY KEY,
-    nombre TEXT ,
-    fecha_caducidad TEXT,
-    precio TEXT,
-    categoria TEXT,
-    marca TEXT, 
-    stock INTEGER
-)
-"""
-# 'IF NOT EXISTS' evita que nos dé un error si la tabla ya ha sido creada
-cursor.execute(comando_sql)
+    def crear_tabla(self):
+        self.cursor.execute("""
+        CREATE TABLE IF NOT EXISTS producto (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nombre TEXT NOT NULL,
+            fecha_caducidad TEXT,
+            categoria TEXT,
+            marca TEXT,
+            precio TEXT,
+            stock INTEGER
+        )
+        """)
+        self.conexion.commit()
+        print("Tabla creada con éxito (si no existía ya).")
 
-# Para que los cambios se guarden de forma permanente, hacemos un "commit"
-conexion.commit()
 
-# --- PASO 3: Cerrar la conexión ---
-conexion.close()
+    def actualizar_lista(self):
+        self.lista_productos.delete(0, tk.END)
+        self.cursor.execute("SELECT id, nombre, fecha_caducidad, categoria, marca, precio, stock FROM producto ORDER BY id")
+        filas = self.cursor.fetchall()
+        for fila in filas:
+            id_p, nombre, fecha, categoria, marca, precio, stock = fila
+            texto = f"{id_p}: {nombre} | {fecha or '-'} | {categoria or '-'} | {marca or '-'} | {precio or '-'} | stock: {stock if stock is not None else '-'}"
+            self.lista_productos.insert(tk.END, texto)
+    
+    def limpiar_campos(self):
+        self.campo_nombre.delete(0, tk.END)
+        self.campo_fecha.delete(0, tk.END)
+        self.campo_categoria.delete(0, tk.END)
+        self.campo_marca.delete(0, tk.END)
+        self.campo_precio.delete(0, tk.END)
+        self.campo_stock.delete(0, tk.END)
+        self.lista_productos.selection_clear(0, tk.END)
 
-print("Tabla 'Producto' creada con éxito (si no existía ya).")
+    def añadir_producto(self):
+        nombre = self.campo_nombre.get().strip()
+        fecha = self.campo_fecha.get().strip()
+        categoria = self.campo_categoria.get().strip()
+        marca = self.campo_marca.get().strip()
+        precio = self.campo_precio.get().strip()
+        stock_text = self.campo_stock.get().strip()
+        
+        if not nombre:
+            messagebox.showwarning("Campo vacío", "El campo Nombre es obligatorio.")
+            return
+
+        try:
+            stock = int(stock_text) if stock_text != "" else None
+        except ValueError:
+            messagebox.showwarning("Valor incorrecto", "Stock debe ser un número entero.")
+            return
+
+        self.cursor.execute(
+            "INSERT INTO producto (nombre, fecha_caducidad, categoria, marca, precio, stock) VALUES (?, ?, ?, ?, ?, ?)",
+            (nombre, fecha, categoria, marca, precio, stock)
+        )
+        self.conexion.commit()
+        self.limpiar_campos()
+        self.actualizar_lista()
+        messagebox.showinfo("Éxito", "Producto añadido correctamente.")
+    
+    def get_id_seleccionado(self):
+            try:
+                seleccionado = self.lista_productos.get(self.lista_productos.curselection())
+                id_producto = int(seleccionado.split(":")[0])
+                return id_producto
+            except (tk.TclError, IndexError, ValueError):
+                return None
+
+    def cargar_producto_seleccionado(self, event):
+        if not self.lista_productos.curselection():
+            return
+        id_p = self.get_id_seleccionado()
+        if id_p:
+            self.cursor.execute("SELECT nombre, fecha_caducidad, categoria, marca, precio, stock FROM producto WHERE id = ?", (id_p,))
+            fila = self.cursor.fetchone()
+            if fila:
+                nombre, fecha, categoria, marca, precio, stock = fila
+                self.campo_nombre.delete(0, tk.END); self.campo_nombre.insert(0, nombre)
+                self.campo_fecha.delete(0, tk.END); self.campo_fecha.insert(0, fecha)
+                self.campo_categoria.delete(0, tk.END); self.campo_categoria.insert(0, categoria)
+                self.campo_marca.delete(0, tk.END); self.campo_marca.insert(0, marca)
+                self.campo_precio.delete(0, tk.END); self.campo_precio.insert(0, precio)
+                self.campo_stock.delete(0, tk.END); self.campo_stock.insert(0, str(stock) if stock is not None else "SI")
 
 # --- Lanzar la aplicación ---
 if __name__ == "__main__":
