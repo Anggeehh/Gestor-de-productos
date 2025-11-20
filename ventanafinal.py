@@ -275,6 +275,7 @@ class App:
         self.ventana.destroy()
 
 if __name__ == "__main__":
+   
     # Punto de entrada: crea la ventana raíz y la instancia de la app
     ventana_principal = tk.Tk()
     app = App(ventana_principal)
