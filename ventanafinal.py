@@ -284,4 +284,3 @@ if __name__ == "__main__":
 
     # Inicia el bucle principal de Tkinter (event loop)
     ventana_principal.mainloop()
-
