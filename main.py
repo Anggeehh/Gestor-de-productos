@@ -93,39 +93,17 @@ class App:
         # Carga inicial de datos desde la BD a la lista
         self.actualizar_lista()
 
-    def crear_tabla(self):
-        """
-        Crea la tabla 'producto' si no existe.
-        
-        """
-        self.cursor.execute("""
-        CREATE TABLE IF NOT EXISTS producto (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            nombre TEXT NOT NULL,
-            fecha_caducidad TEXT,
-            categoria TEXT,
-            marca TEXT,
-            precio TEXT,
-            stock INTEGER
-        )
-        """)
-        self.conexion.commit()  # Guarda la operación en el fichero de BD
-
+    
+    
     def actualizar_lista(self):
-        """
-        Refresca la Listbox con todos los registros.
-        
-        """
         self.lista_productos.delete(0, tk.END)  # Limpia la lista
-        self.cursor.execute(
-            "SELECT id, nombre, fecha_caducidad, categoria, marca, precio, stock FROM producto ORDER BY id"
-        )
-        filas = self.cursor.fetchall()
+
         for fila in filas:
             id_p, nombre, fecha, categoria, marca, precio, stock = fila
             # Formatea cada producto en una línea amigable
             texto = f"{id_p}: {nombre} | {fecha or '-'} | {categoria or '-'} | {marca or '-'} | {precio or '-'} | stock: {stock if stock is not None else '-'}"
             self.lista_productos.insert(tk.END, texto)
+
 
     def limpiar_campos(self):
         """
@@ -164,11 +142,8 @@ class App:
             return
 
         # Inserción en la tabla
-        self.cursor.execute(
-            "INSERT INTO producto (nombre, fecha_caducidad, categoria, marca, precio, stock) VALUES (?, ?, ?, ?, ?, ?)",
-            (nombre, fecha, categoria, marca, precio, stock)
-        )
-        self.conexion.commit()
+        
+    
         self.limpiar_campos()
         self.actualizar_lista()
         messagebox.showinfo("Éxito", "Producto añadido correctamente.")
@@ -275,7 +250,6 @@ class App:
         self.ventana.destroy()
 
 if __name__ == "__main__":
-   
     # Punto de entrada: crea la ventana raíz y la instancia de la app
     ventana_principal = tk.Tk()
     app = App(ventana_principal)
@@ -285,4 +259,3 @@ if __name__ == "__main__":
 
     # Inicia el bucle principal de Tkinter (event loop)
     ventana_principal.mainloop()
-
