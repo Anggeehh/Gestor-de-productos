@@ -27,10 +27,7 @@ class DatabaseManager:
 
     
     def actualizar_lista(self):
-        """
-        Refresca la Listbox con todos los registros.
-        
-        """
+       
         self.cursor.execute(
             "SELECT id, nombre, fecha_caducidad, categoria, marca, precio, stock FROM producto ORDER BY id"
         )
@@ -38,12 +35,31 @@ class DatabaseManager:
         return filas
 
     def añadir_producto(self):
-        """
-        Inserta un nuevo producto en la BD:
         
-        """
         self.cursor.execute(
             "INSERT INTO producto (nombre, fecha_caducidad, categoria, marca, precio, stock) VALUES (?, ?, ?, ?, ?, ?)",
             (nombre, fecha, categoria, marca, precio, stock)
         )
         self.conexion.commit()
+
+    def modificar_producto(self):
+        self.cursor.execute(
+                    "UPDATE producto SET nombre = ?, fecha_caducidad = ?, categoria = ?, marca = ?, precio = ?, stock = ? WHERE id = ?",
+                    (nombre, fecha, categoria, marca, precio, stock, id_p)
+                )
+        self.conexion.commit()        
+    
+    def eliminar_producto(self):
+        self.cursor.execute("DELETE FROM producto WHERE id = ?", (id_p,))
+        self.conexion.commit()
+    
+    def cargar_producto_seleccionado(self, event):
+        self.cursor.execute(
+            "SELECT nombre, fecha_caducidad, categoria, marca, precio, stock FROM producto WHERE id = ?",
+            (id_p,)
+        )
+        fila = self.cursor.fetchone()
+        return fila
+   
+
+    
