@@ -169,11 +169,8 @@ class App:
             return
         id_p = self.get_id_seleccionado()
         if id_p:
-            self.cursor.execute(
-                "SELECT nombre, fecha_caducidad, categoria, marca, precio, stock FROM producto WHERE id = ?",
-                (id_p,)
-            )
-            fila = self.cursor.fetchone()
+            
+           
             if fila:
                 nombre, fecha, categoria, marca, precio, stock = fila
                 # Rellena cada campo limpiándolo antes
@@ -211,11 +208,6 @@ class App:
             messagebox.showwarning("Valor incorrecto", "Stock debe ser un número entero.")
             return
 
-        self.cursor.execute(
-            "UPDATE producto SET nombre = ?, fecha_caducidad = ?, categoria = ?, marca = ?, precio = ?, stock = ? WHERE id = ?",
-            (nombre, fecha, categoria, marca, precio, stock, id_p)
-        )
-        self.conexion.commit()
         self.limpiar_campos()
         self.actualizar_lista()
         messagebox.showinfo("Éxito", "Producto modificado correctamente.")
@@ -233,8 +225,7 @@ class App:
 
         seleccionado_text = self.lista_productos.get(self.lista_productos.curselection())
         if messagebox.askyesno("Confirmar borrado", f"¿Eliminar el producto?\n\n{seleccionado_text}"):
-            self.cursor.execute("DELETE FROM producto WHERE id = ?", (id_p,))
-            self.conexion.commit()
+            
             self.limpiar_campos()
             self.actualizar_lista()
             messagebox.showinfo("Éxito", "Producto eliminado correctamente.")
