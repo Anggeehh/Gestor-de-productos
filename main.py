@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import messagebox
-import sqlite3
+from database_manager import DatabaseManager
 
 class App:
     def __init__(self, ventana):
@@ -246,12 +246,7 @@ class App:
         self.ventana.destroy()
 
 if __name__ == "__main__":
-    # Punto de entrada: crea la ventana raíz y la instancia de la app
     ventana_principal = tk.Tk()
     app = App(ventana_principal)
-
-    # Intercepta el evento de cierre de la ventana para cerrar la BD correctamente
     ventana_principal.protocol("WM_DELETE_WINDOW", app.cerrar)
-
-    # Inicia el bucle principal de Tkinter (event loop)
     ventana_principal.mainloop()
