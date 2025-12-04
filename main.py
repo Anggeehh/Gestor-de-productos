@@ -1,7 +1,6 @@
 import tkinter as tk
 from tkinter import messagebox
-from database_manager import DatabaseManager
-
+import sqlite3
 
 class App:
     def __init__(self, ventana):
@@ -11,10 +10,8 @@ class App:
         self.ventana.geometry("820x450")               # Tamaño inicial de la ventana
         self.ventana.configure(bg="#e6f2e6")           # Color de fondo
 
-        # Conexión a la Base de Datos SQLite (crea el fichero si no existe)
-        self.conexion = sqlite3.connect('productos.db') # Abre/crea productos.db
-        self.cursor = self.conexion.cursor()            # Cursor para ejecutar SQL
-        self.crear_tabla()                              # Garantiza que la tabla exista
+        self.db = DatabaseManager('productos.db')
+
 
         # Frames: contenedores para organizar controles (formulario, botones, lista)
         frame_formulario = tk.Frame(self.ventana, bg="#e6f2e6", pady=10)
@@ -98,6 +95,7 @@ class App:
     
     def actualizar_lista(self):
         self.lista_productos.delete(0, tk.END)  # Limpia la lista
+        filas = self.db.actualizar_lista()
 
         producto = self.db.actualizar_lista()
         for fila in filas:
@@ -143,11 +141,11 @@ class App:
             stock = int(stock_text) if stock_text != "" else None
         except ValueError:
             messagebox.showwarning("Valor incorrecto", "Stock debe ser un número entero.")
-            return
+            
 
         # Inserción en la tabla
         
-    
+        self.db.añadir_producto(nombre, fecha, categoria, marca, precio, stock_text)
         self.limpiar_campos()
         self.actualizar_lista()
         messagebox.showinfo("Éxito", "Producto añadido correctamente.")
@@ -173,7 +171,7 @@ class App:
             return
         id_p = self.get_id_seleccionado()
         if id_p:
-            
+            producto = self.db.cargar_producto_seleccionada(id_p)
            
             if fila:
                 nombre, fecha, categoria, marca, precio, stock = fila
@@ -214,6 +212,7 @@ class App:
             messagebox.showwarning("Valor incorrecto", "Stock debe ser un número entero.")
             return
 
+        self.db.modificar_producto(nombre, fecha, categoria, marca, precio, stock_text, id_p)
         self.limpiar_campos()
         self.actualizar_lista()
         messagebox.showinfo("Éxito", "Producto modificado correctamente.")
@@ -231,7 +230,7 @@ class App:
 
         seleccionado_text = self.lista_productos.get(self.lista_productos.curselection())
         if messagebox.askyesno("Confirmar borrado", f"¿Eliminar el producto?\n\n{seleccionado_text}"):
-            self.db.eliminar_producto(id_producto) # Llama al método de la otra clase
+            self.db.eliminar_producto(id_p)
             self.limpiar_campos()
             self.actualizar_lista()
             messagebox.showinfo("Éxito", "Producto eliminado correctamente.")
@@ -241,7 +240,7 @@ class App:
         Cierra la conexión a la BD y la ventana con manejo básico de errores.
         """
         try:
-            self.conexion.close()
+            self.db.cerrar()
         except:
             pass
         self.ventana.destroy()
