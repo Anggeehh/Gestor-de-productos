@@ -231,7 +231,7 @@ class App:
 
         seleccionado_text = self.lista_productos.get(self.lista_productos.curselection())
         if messagebox.askyesno("Confirmar borrado", f"¿Eliminar el producto?\n\n{seleccionado_text}"):
-             self.db.eliminar_producto(id_producto) # Llama al método de la otra clase
+            self.db.eliminar_producto(id_producto) # Llama al método de la otra clase
             self.limpiar_campos()
             self.actualizar_lista()
             messagebox.showinfo("Éxito", "Producto eliminado correctamente.")
