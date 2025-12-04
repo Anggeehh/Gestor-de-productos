@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox
-import sqlite3
+from database_manager import DatabaseManager
+
 
 class App:
     def __init__(self, ventana):
@@ -98,6 +99,7 @@ class App:
     def actualizar_lista(self):
         self.lista_productos.delete(0, tk.END)  # Limpia la lista
 
+        producto = self.db.actualizar_lista()
         for fila in filas:
             id_p, nombre, fecha, categoria, marca, precio, stock = fila
             # Formatea cada producto en una línea amigable
@@ -128,6 +130,8 @@ class App:
         marca = self.campo_marca.get().strip()
         precio = self.campo_precio.get().strip()
         stock_text = self.campo_stock.get().strip()
+        if name:
+         self.db.añadir_producto(name , fecha, categoria , marca , precio , stock_text) # Llama al método de la otra clase
 
         # Validación mínima
         if not nombre:
@@ -197,6 +201,8 @@ class App:
         marca = self.campo_marca.get().strip()
         precio = self.campo_precio.get().strip()
         stock_text = self.campo_stock.get().strip()
+        if name:
+         self.db.modificar_producto(name, fecha, categoria , marca , precio , stock , id_producto) # Llama al método de la otra clase
 
         if not nombre:
             messagebox.showwarning("Campo vacío", "El campo Nombre es obligatorio.")
@@ -225,7 +231,7 @@ class App:
 
         seleccionado_text = self.lista_productos.get(self.lista_productos.curselection())
         if messagebox.askyesno("Confirmar borrado", f"¿Eliminar el producto?\n\n{seleccionado_text}"):
-            
+             self.db.eliminar_producto(id_producto) # Llama al método de la otra clase
             self.limpiar_campos()
             self.actualizar_lista()
             messagebox.showinfo("Éxito", "Producto eliminado correctamente.")
