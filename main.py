@@ -97,7 +97,6 @@ class App:
         self.lista_productos.delete(0, tk.END)  # Limpia la lista
         filas = self.db.actualizar_lista()
 
-        producto = self.db.actualizar_lista()
         for fila in filas:
             id_p, nombre, fecha, categoria, marca, precio, stock = fila
             # Formatea cada producto en una línea amigable
@@ -128,8 +127,6 @@ class App:
         marca = self.campo_marca.get().strip()
         precio = self.campo_precio.get().strip()
         stock_text = self.campo_stock.get().strip()
-        if name:
-         self.db.añadir_producto(name , fecha, categoria , marca , precio , stock_text) # Llama al método de la otra clase
 
         # Validación mínima
         if not nombre:
@@ -199,8 +196,6 @@ class App:
         marca = self.campo_marca.get().strip()
         precio = self.campo_precio.get().strip()
         stock_text = self.campo_stock.get().strip()
-        if name:
-         self.db.modificar_producto(name, fecha, categoria , marca , precio , stock , id_producto) # Llama al método de la otra clase
 
         if not nombre:
             messagebox.showwarning("Campo vacío", "El campo Nombre es obligatorio.")
@@ -246,7 +241,12 @@ class App:
         self.ventana.destroy()
 
 if __name__ == "__main__":
+    # Punto de entrada: crea la ventana raíz y la instancia de la app
     ventana_principal = tk.Tk()
     app = App(ventana_principal)
+
+    # Intercepta el evento de cierre de la ventana para cerrar la BD correctamente
     ventana_principal.protocol("WM_DELETE_WINDOW", app.cerrar)
+
+    # Inicia el bucle principal de Tkinter (event loop)
     ventana_principal.mainloop()
