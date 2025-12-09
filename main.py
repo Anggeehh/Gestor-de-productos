@@ -117,10 +117,6 @@ class App:
         self.lista_productos.selection_clear(0, tk.END)  # Quita la selección
 
     def añadir_producto(self):
-        """
-        Inserta un nuevo producto en la BD:
-        
-        """
         nombre = self.campo_nombre.get().strip()
         fecha = self.campo_fecha.get().strip()
         categoria = self.campo_categoria.get().strip()
@@ -128,24 +124,22 @@ class App:
         precio = self.campo_precio.get().strip()
         stock_text = self.campo_stock.get().strip()
 
-        # Validación mínima
         if not nombre:
             messagebox.showwarning("Campo vacío", "El campo Nombre es obligatorio.")
             return
 
-        # Conversión segura de stock a entero (o None si vacío)
         try:
             stock = int(stock_text) if stock_text != "" else None
         except ValueError:
             messagebox.showwarning("Valor incorrecto", "Stock debe ser un número entero.")
-            
+            return
 
-        # Inserción en la tabla
-        
-        self.db.añadir_producto(nombre, fecha, categoria, marca, precio, stock_text)
+        # Inserción en la tabla con stock correcto
+        self.db.añadir_producto(nombre, fecha, categoria, marca, precio, stock)
         self.limpiar_campos()
         self.actualizar_lista()
         messagebox.showinfo("Éxito", "Producto añadido correctamente.")
+
 
     def get_id_seleccionado(self):
         """
@@ -160,18 +154,14 @@ class App:
             return None
 
     def cargar_producto_seleccionado(self, event):
-        """
-        Cuando el usuario selecciona un elemento en la Listbox:
-        
-        """
+    
         if not self.lista_productos.curselection():
             return
         id_p = self.get_id_seleccionado()
         if id_p:
-            producto = self.db.cargar_producto_seleccionada(id_p)
-           
-            if fila:
-                nombre, fecha, categoria, marca, precio, stock = fila
+            producto = self.db.cargar_producto_seleccionado(id_p)
+            if producto:
+                nombre, fecha, categoria, marca, precio, stock = producto
                 # Rellena cada campo limpiándolo antes
                 self.campo_nombre.delete(0, tk.END); self.campo_nombre.insert(0, nombre)
                 self.campo_fecha.delete(0, tk.END); self.campo_fecha.insert(0, fecha or "")
@@ -180,11 +170,8 @@ class App:
                 self.campo_precio.delete(0, tk.END); self.campo_precio.insert(0, precio or "")
                 self.campo_stock.delete(0, tk.END); self.campo_stock.insert(0, str(stock) if stock is not None else "")
 
+
     def modificar_producto(self):
-        """
-        Actualiza el producto seleccionado:
-        
-        """
         id_p = self.get_id_seleccionado()
         if not id_p:
             messagebox.showinfo("Sin selección", "Selecciona un producto para modificar.")
@@ -207,10 +194,11 @@ class App:
             messagebox.showwarning("Valor incorrecto", "Stock debe ser un número entero.")
             return
 
-        self.db.modificar_producto(nombre, fecha, categoria, marca, precio, stock_text, id_p)
+        self.db.modificar_producto(nombre, fecha, categoria, marca, precio, stock, id_p)
         self.limpiar_campos()
         self.actualizar_lista()
         messagebox.showinfo("Éxito", "Producto modificado correctamente.")
+
 
     def eliminar_producto(self):
         """
